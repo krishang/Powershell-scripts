@@ -13,6 +13,6 @@
    (get-credential).password | ConvertFrom-SecureString | set-content "C:\temp\password.txt"
    Note this can only be decrypted on the machine it was encryted with the exact user logins.
    
-#### Create an encrytped password. Note can only be decrypted on the machin and user who created this.
+#### Create an encrytped password. Note can only be decrypted on the machine and user who created this.
 #### (get-credential).password | ConvertFrom-SecureString | set-content "C:\temp\password.txt"
 #### $sFTPPassword = Get-Content "C:\temp\password.txt" | ConvertTo-SecureString
