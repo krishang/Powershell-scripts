@@ -1,7 +1,7 @@
 # Author: KrishanG 
 # Released under GNU license.
 # Date : 25/07/2022
-# Remarks: This script connects to the ICON SFTP server and downloads all the CSV files and also uploads all the scanned documents sitting on the docman folder.
+# Remarks: This script connects to the SFTP server and downloads all the CSV files and also uploads all the scanned documents sitting on the docman folder.
 # download and install using a power shell terminal
 #        Install-Module -Name Posh-SSH
 # if the script does not run check that the functions exist in the current version of Posh-SSH
