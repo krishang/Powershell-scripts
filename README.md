@@ -19,20 +19,21 @@
 
 ## SQL Server database structure exporter
 
-[`Export-SqlDatabaseStructure-v1.0.5.ps1`](./Export-SqlDatabaseStructure-v1.0.5.ps1) creates a ZIP
-package containing a schema-only SQL Server database export for documentation and analysis. It
-includes individual DDL scripts for supported database objects, a combined schema script, a JSON
-manifest, database metadata, and CSV catalogues for items such as columns, keys, indexes,
-dependencies, permissions, and optional approximate table row counts.
+[`Export-SqlDatabaseStructure-v2.0.1.ps1`](./Export-SqlDatabaseStructure-v2.0.1.ps1) exports a
+SQL Server database's schema for documentation, analysis, and AI-assisted database work. It
+produces a technical export with individual DDL files, a combined schema script, CSV metadata
+catalogues, a JSON manifest, and database information. By default it also creates a separate
+Copilot-ready knowledge source with object-level Markdown, database overview and agent guidance.
 
-The exporter does **not** export table rows or intentionally script passwords, credentials,
-encryption keys, private certificate material, or linked-server secrets. SQL definitions can still
-contain environment-specific literals; review the output before sharing it.
+The tool does **not** export table row data. It intentionally excludes passwords, credentials,
+encryption keys, private certificate material, and linked-server secrets. Object definitions may
+still contain environment-specific names, URLs, paths, comments, or hard-coded literals; review
+the generated files before sharing them.
 
 ### Requirements
 
 - Windows PowerShell 5.1 or PowerShell 7+
-- The `SqlServer` PowerShell module (provides SQL Server Management Objects, SMO)
+- SQL Server Management Objects (SMO), normally provided by the `SqlServer` PowerShell module
 - Network access and a SQL login or Windows account with permission to connect and view database metadata
 
 Install the module for the current user if needed:
@@ -46,7 +47,7 @@ Install-Module SqlServer -Scope CurrentUser
 Windows integrated authentication:
 
 ```powershell
-.\Export-SqlDatabaseStructure-v1.0.5.ps1 `
+.\Export-SqlDatabaseStructure-v2.0.1.ps1 `
     -ServerInstance "sqlserver.example.com" `
     -Database "MyDatabase" `
     -OutputPath "C:\Temp\DatabaseSchema"
@@ -56,7 +57,7 @@ SQL authentication prompts securely for credentials:
 
 ```powershell
 $credential = Get-Credential
-.\Export-SqlDatabaseStructure-v1.0.5.ps1 `
+.\Export-SqlDatabaseStructure-v2.0.1.ps1 `
     -ServerInstance "sqlserver.example.com" `
     -Database "MyDatabase" `
     -OutputPath "C:\Temp\DatabaseSchema" `
@@ -68,9 +69,18 @@ Optional switches:
 - `-IncludePermissions` adds database permission metadata.
 - `-IncludeRowCounts` adds approximate table row counts.
 - `-IncludeSystemObjects` includes system objects where supported.
-- `-EncryptConnection` enables connection encryption; `-TrustServerCertificate` is available for
-  environments where certificate validation is deliberately bypassed.
-- `-Overwrite` replaces an existing export folder or ZIP at the output path.
+- `-SkipCopilotKnowledge` skips the Copilot-ready knowledge files and transfer archive.
+- `-EncryptConnection` enables connection encryption. `-TrustServerCertificate` is available when
+  certificate validation is deliberately bypassed.
+- `-Overwrite` replaces existing output files.
 
-Encrypted SQL modules cannot expose their definitions, and metadata hidden from the connecting
-account may be omitted. See the script's help text for troubleshooting and further details.
+### Output
+
+The output path receives a timestamped export folder and a technical ZIP archive. Unless
+`-SkipCopilotKnowledge` is specified, the folder also contains `CopilotKnowledge` and a separate
+`_CopilotKnowledge.zip` transfer archive. The knowledge source includes per-object Markdown with
+available columns, parameters, dependencies and definitions, plus CSV catalogues and guidance for
+using the export as an AI knowledge source.
+
+Encrypted SQL modules cannot expose their definitions, and objects hidden by metadata permissions
+may be omitted. See the script's help text for troubleshooting, limitations, and security guidance.
